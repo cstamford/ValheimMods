@@ -13,7 +13,7 @@ namespace RememberIPDamnit
     {
         public const string Name = "RememberIPDamnit";
         public const string Guid = "Xenofell." + Name;
-        public const string Version = "0.1";
+        public const string Version = "0.2";
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
@@ -80,11 +80,9 @@ namespace RememberIPDamnit
 
             private static string PasswordTrampoline()
             {
-                UnityEngine.Debug.Log("Plugin.Password.Value");
                 return Plugin.Password.Value;
             }
         }
-
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ZNet), "OnPasswordEnter")]
