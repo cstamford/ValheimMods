@@ -2,6 +2,8 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace ImNoMasochist
@@ -10,7 +12,7 @@ namespace ImNoMasochist
     {
         public const string Name = "ImNoMasochist";
         public const string Guid = "Xenofell." + Name;
-        public const string Version = "0.1";
+        public const string Version = "0.2";
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
@@ -24,6 +26,7 @@ namespace ImNoMasochist
         public static ConfigEntry<int> Kiln_MaxFuel;
         public static ConfigEntry<float> SecondsPerComfortLevel;
         public static ConfigEntry<float> PieceComfortDistance;
+        public static ConfigEntry<float> WagonWeightModifier;
 
         public void Awake()
         {
@@ -33,6 +36,7 @@ namespace ImNoMasochist
             Kiln_MaxFuel = Config.Bind("ImNoMasochist", "Kiln_MaxFuel", 200, "Changes the max wood the kiln can hold. (Valheim default is 25)");
             SecondsPerComfortLevel = Config.Bind("ImNoMasochist", "SecondsPerComfortLevel", 180.0f, "Changes the rested length per comfort level. (Valheim default is 60.0)");
             PieceComfortDistance = Config.Bind("ImNoMasochist", "PieceComfortDistance", 20.0f, "Changes how close you msut be to a piece to gain its comfort. (Valheim default is 10.0)");
+            WagonWeightModifier = Config.Bind("ImNoMasochist", "WagonWeightModifier", 0.2f, "Changes how heavy the wagon believes it is, leading to changed maneuverability. (Valheim default is 1.0)");
 
             Harmony harmony = new Harmony(PluginInfo.Guid);
             harmony.PatchAll();
@@ -43,15 +47,11 @@ namespace ImNoMasochist
     public static class Patches
     {
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(Skills), "OnDeath")]
-        public static bool Skills_OnDeath(Skills __instance)
+        [HarmonyPatch(typeof(Skills), "LowerAllSkills")]
+        public static bool Skills_LowerAllSkills(ref float factor)
         {
-            if (Plugin.DeathPenaltyModifier.Value > 0.0f)
-            {
-                __instance.m_DeathLowerFactor = Plugin.DeathPenaltyModifier.Value;
-            }
-
-            return Plugin.DeathPenaltyModifier.Value > 0.0f;
+            factor = Plugin.DeathPenaltyModifier.Value;
+            return factor > 0.0f; // skip original call if penalty disabled
         }
 
         [HarmonyPrefix]
@@ -76,13 +76,43 @@ namespace ImNoMasochist
             ___m_TTLPerComfortLevel = Plugin.SecondsPerComfortLevel.Value;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(SE_Rested), "GetNearbyPieces")]
-        public static bool SE_Rested_GetNearbyPieces(Vector3 point, ref List<Piece> __result)
+        [HarmonyPatch(typeof(SE_Rested), "CalculateComfortLevel")]
+        public static class SE_Rested_CalculateComfortLevel
         {
-            __result = new List<Piece>();
-            Piece.GetAllPiecesInRadius(point, Plugin.PieceComfortDistance.Value, __result);
-            return false;
+            private static MethodInfo method_SE_Rested_GetNearbyPieces = AccessTools.Method(typeof(SE_Rested), "GetNearbyPieces");
+            private static MethodInfo method_GetNearbyPieces = AccessTools.Method(typeof(SE_Rested_CalculateComfortLevel), "GetNearbyPieces");
+
+            [HarmonyTranspiler]
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> il = instructions.ToList();
+
+                // replace call to original with our own
+                for (int i = 0; i < il.Count; ++i)
+                {
+                    if (il[i].Calls(method_SE_Rested_GetNearbyPieces))
+                    {
+                        il[i].operand = method_GetNearbyPieces;
+                        break;
+                    }
+                }
+
+                return il.AsEnumerable();
+            }
+
+            public static List<Piece> GetNearbyPieces(Vector3 point)
+            {
+                List<Piece> pieces = new List<Piece>();
+                Piece.GetAllPiecesInRadius(point, Plugin.PieceComfortDistance.Value, pieces);
+                return pieces;
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Vagon), "SetMass")]
+        public static void Vagon_SetMass(ref float mass)
+        {
+            mass *= Plugin.WagonWeightModifier.Value;
         }
     }
 }
