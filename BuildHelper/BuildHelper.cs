@@ -13,7 +13,7 @@ namespace BuildHelper
     {
         public const string Name = "BuildHelper";
         public const string Guid = "Xenofell." + Name;
-        public const string Version = "0.1";
+        public const string Version = "0.2";
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
@@ -45,9 +45,19 @@ namespace BuildHelper
     {
         [HarmonyPrefix]
         [HarmonyPatch(typeof(CraftingStation), "Start")]
-        public static void CraftingStation_Start(ref float ___m_rangeBuild)
+        public static void CraftingStation_Start(ref float ___m_rangeBuild, ref GameObject ___m_areaMarker)
         {
             ___m_rangeBuild = Plugin.WorkbenchRadius.Value;
+
+            if (___m_areaMarker != null)
+            {
+                CircleProjector proj = ___m_areaMarker.GetComponent<CircleProjector>();
+
+                if (proj != null)
+                {
+                    proj.m_radius = ___m_rangeBuild;
+                }
+            }
         }
 
         [HarmonyPrefix]
@@ -199,7 +209,6 @@ namespace BuildHelper
 
                     return il.AsEnumerable();
                 }
-
                 public static void MessageNoop(Character instance, MessageHud.MessageType _1, string _2, int _3, Sprite _4, int repaired)
                 {
                     Player_UpdatePlacement.RepairCount += repaired;
