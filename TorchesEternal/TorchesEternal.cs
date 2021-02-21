@@ -7,7 +7,7 @@ namespace TorchesEternal
     {
         public const string Name = "TorchesEternal";
         public const string Guid = "Xenofell." + Name;
-        public const string Version = "0.1";
+        public const string Version = "0.2";
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]

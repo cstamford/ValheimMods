@@ -11,7 +11,7 @@ namespace PreWorkout
     {
         public const string Name = "PreWorkout";
         public const string Guid = "Xenofell." + Name;
-        public const string Version = "0.1";
+        public const string Version = "0.2";
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
