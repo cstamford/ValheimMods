@@ -32,16 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>%VALHEIM_BEPINEX_ASSEMBLY_DIR%0Harmony.dll</HintPath>
+      <HintPath>$(VALHEIM_BEPINEX_ASSEMBLY_DIR)\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="assembly_valheim">
-      <HintPath>%VALHEIM_ASSEMBLY_DIR%\Managed\assembly_valheim.dll</HintPath>
+      <HintPath>$(VALHEIM_ASSEMBLY_DIR)\assembly_valheim.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>%VALHEIM_BEPINEX_ASSEMBLY_DIR%BepInEx.dll</HintPath>
+      <HintPath>$(VALHEIM_BEPINEX_ASSEMBLY_DIR)\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>%VALHEIM_BEPINEX_ASSEMBLY_DIR%BepInEx.Harmony.dll</HintPath>
+      <HintPath>$(VALHEIM_BEPINEX_ASSEMBLY_DIR)\BepInEx.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,10 +52,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>%VALHEIM_ASSEMBLY_DIR%\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(VALHEIM_ASSEMBLY_DIR)\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>%VALHEIM_ASSEMBLY_DIR%\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(VALHEIM_ASSEMBLY_DIR)\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
