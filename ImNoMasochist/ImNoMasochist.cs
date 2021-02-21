@@ -16,8 +16,6 @@ namespace ImNoMasochist
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
-    [BepInProcess("valheim.exe")]
-    [BepInProcess("valheim_server.exe")]
     public class Plugin : BaseUnityPlugin
     {
         public static ConfigEntry<float> DeathPenaltyModifier;

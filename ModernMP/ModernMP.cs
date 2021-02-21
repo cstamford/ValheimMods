@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace ModernMP
@@ -18,8 +17,6 @@ namespace ModernMP
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
-    [BepInProcess("valheim.exe")]
-    [BepInProcess("valheim_server.exe")]
     public class Plugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> SharePosition;

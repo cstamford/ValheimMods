@@ -15,8 +15,6 @@ namespace PreWorkout
     }
 
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
-    [BepInProcess("valheim.exe")]
-    [BepInProcess("valheim_server.exe")]
     public class Plugin : BaseUnityPlugin
     {
         public void Awake()
