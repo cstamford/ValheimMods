@@ -1,6 +1,10 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Skillful
 {
@@ -44,15 +48,40 @@ namespace Skillful
             ___m_maxCarryWeight = base_weight + bonus_carry;
         }
 
-        [HarmonyPrefix]
         [HarmonyPatch(typeof(Character), "UpdateWalking")]
-        public static void Character_UpdateWalking(Character __instance, float dt)
+        public static class Character_UpdateWalking
         {
-            if (__instance.m_name.Contains("Human"))
+            private static FieldInfo field_Character_m_crouchSpeed = AccessTools.Field(typeof(Character), "m_crouchSpeed");
+            private static MethodInfo method_GetMoveSpeed = AccessTools.Method(typeof(Character_UpdateWalking), "GetMoveSpeed");
+
+            [HarmonyTranspiler]
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                float base_sneak_speed = Plugin.BaseSneakSpeed.Value;
-                float bonus_sneak_speed = Plugin.MaxBonusSneakSpeed.Value * __instance.GetSkillFactor(Skills.SkillType.Sneak);
-                __instance.m_crouchSpeed = base_sneak_speed + bonus_sneak_speed;
+                List<CodeInstruction> il = instructions.ToList();
+
+                // change the loas from m_crouchSpeed to a function call instead
+                for (int i = 0; i < il.Count; ++i)
+                {
+                    if (il[i].LoadsField(field_Character_m_crouchSpeed))
+                    {
+                        il[i].opcode = OpCodes.Call;
+                        il[i].operand = method_GetMoveSpeed;
+                    }
+                }
+
+                return il.AsEnumerable();
+            }
+
+            public static float GetMoveSpeed(Character __instance)
+            {
+                if (!__instance.IsEncumbered() && __instance.m_name.Contains("Human"))
+                {
+                    float base_sneak_speed = Plugin.BaseSneakSpeed.Value;
+                    float bonus_sneak_speed = Plugin.MaxBonusSneakSpeed.Value * __instance.GetSkillFactor(Skills.SkillType.Sneak);
+                    return base_sneak_speed + bonus_sneak_speed;
+                }
+
+                return __instance.m_crouchSpeed;
             }
         }
     }
