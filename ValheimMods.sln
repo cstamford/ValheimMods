@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "__Template", "Template\__Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skillful", "Skillful\Skillful.csproj", "{63F22891-3EFE-4B87-80DA-66278108E0AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModernMP", "ModernMP\ModernMP.csproj", "{A61F0B79-B352-4747-9705-7B16D982E34A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{63F22891-3EFE-4B87-80DA-66278108E0AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63F22891-3EFE-4B87-80DA-66278108E0AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63F22891-3EFE-4B87-80DA-66278108E0AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A61F0B79-B352-4747-9705-7B16D982E34A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A61F0B79-B352-4747-9705-7B16D982E34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A61F0B79-B352-4747-9705-7B16D982E34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A61F0B79-B352-4747-9705-7B16D982E34A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
